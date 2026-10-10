@@ -312,3 +312,20 @@ func TestDetectOpenCodeAuth_AddsLocalAccountWithoutZenKey(t *testing.T) {
 	}
 	t.Fatalf("no opencode account in %+v", result.Accounts)
 }
+
+func TestDetectOpenCodeAuth_CloudflareCarriesAccountID(t *testing.T) {
+	withFakeOpenCodeAuth(t, `{"cloudflare-workers-ai": {"type": "api", "key": "cf-token-1234567890", "metadata": {"accountId": "acc123"}}}`)
+
+	var result Result
+	detectOpenCodeAuth(&result)
+
+	for _, a := range result.Accounts {
+		if a.ID == "cloudflare-workers-ai" {
+			if a.Provider != "cloudflare_workers_ai" || a.Hint("account_id", "") != "acc123" {
+				t.Fatalf("cloudflare account = %+v", a)
+			}
+			return
+		}
+	}
+	t.Fatalf("no cloudflare account in %+v", result.Accounts)
+}

@@ -229,6 +229,8 @@ func DefaultProviderLinks() map[string]string {
 		"google":         "gemini_api",
 		"github-copilot": "copilot",
 		"azure":          "azure_openai",
+		// OpenCode's id; openusage provider ids use underscores.
+		"cloudflare-workers-ai": "cloudflare_workers_ai",
 	}
 }
 

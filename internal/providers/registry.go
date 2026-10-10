@@ -9,7 +9,9 @@ import (
 	"github.com/janekbaraniewski/openusage/internal/providers/anthropic"
 	"github.com/janekbaraniewski/openusage/internal/providers/antigravity"
 	"github.com/janekbaraniewski/openusage/internal/providers/azure_openai"
+	"github.com/janekbaraniewski/openusage/internal/providers/cerebras"
 	"github.com/janekbaraniewski/openusage/internal/providers/claude_code"
+	"github.com/janekbaraniewski/openusage/internal/providers/cloudflare_workers_ai"
 	"github.com/janekbaraniewski/openusage/internal/providers/codebuff"
 	"github.com/janekbaraniewski/openusage/internal/providers/codex"
 	"github.com/janekbaraniewski/openusage/internal/providers/copilot"
@@ -22,17 +24,20 @@ import (
 	"github.com/janekbaraniewski/openusage/internal/providers/goose"
 	"github.com/janekbaraniewski/openusage/internal/providers/groq"
 	"github.com/janekbaraniewski/openusage/internal/providers/hermes"
+	"github.com/janekbaraniewski/openusage/internal/providers/huggingface"
 	"github.com/janekbaraniewski/openusage/internal/providers/kilocode"
 	"github.com/janekbaraniewski/openusage/internal/providers/kimi_cli"
 	"github.com/janekbaraniewski/openusage/internal/providers/kiro"
 	"github.com/janekbaraniewski/openusage/internal/providers/mistral"
 	"github.com/janekbaraniewski/openusage/internal/providers/moonshot"
 	"github.com/janekbaraniewski/openusage/internal/providers/mux"
+	"github.com/janekbaraniewski/openusage/internal/providers/nvidia"
 	"github.com/janekbaraniewski/openusage/internal/providers/ollama"
 	"github.com/janekbaraniewski/openusage/internal/providers/openai"
 	"github.com/janekbaraniewski/openusage/internal/providers/openclaw"
 	"github.com/janekbaraniewski/openusage/internal/providers/opencode"
 	"github.com/janekbaraniewski/openusage/internal/providers/openrouter"
+	"github.com/janekbaraniewski/openusage/internal/providers/orcarouter"
 	"github.com/janekbaraniewski/openusage/internal/providers/perplexity"
 	"github.com/janekbaraniewski/openusage/internal/providers/pi"
 	"github.com/janekbaraniewski/openusage/internal/providers/qwen_cli"
@@ -53,6 +58,11 @@ func AllProviders() []core.UsageProvider {
 		perplexity.New(),
 		groq.New(),
 		mistral.New(),
+		nvidia.New(),
+		huggingface.New(),
+		cerebras.New(),
+		orcarouter.New(),
+		cloudflare_workers_ai.New(),
 		moonshot.New(),
 		deepseek.New(),
 		xai.New(),

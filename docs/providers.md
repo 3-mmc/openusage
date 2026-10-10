@@ -171,6 +171,12 @@ on startup and adopt the API keys it finds. Currently maps:
 | `ollama-cloud` (api) | `ollama-cloud` (provider `ollama`) |
 | `groq` (api) | `groq` |
 | `mistral` (api) | `mistral` |
+| `google` (api) | `gemini-api` (provider `gemini_api`) |
+| `nvidia` (api) | `nvidia` |
+| `huggingface` (api) | `huggingface` |
+| `cerebras` (api) | `cerebras` |
+| `orcarouter` (api) | `orcarouter` |
+| `cloudflare-workers-ai` (api, `metadata.accountId`) | `cloudflare-workers-ai` (provider `cloudflare_workers_ai`) |
 
 OAuth-typed entries (`anthropic`, `openai`, `google`, `cursor`) are skipped:
 they're chat-scoped tokens, not the API-key shape openusage's poll-time probes

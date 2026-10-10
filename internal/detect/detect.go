@@ -463,6 +463,11 @@ var envKeyMapping = []envKeyMappingEntry{
 	{EnvVar: "GEMINI_API_KEY", Provider: "gemini_api", AccountID: "gemini-api", AiderShortNames: []string{"gemini", "google"}},
 	{EnvVar: "GOOGLE_API_KEY", Provider: "gemini_api", AccountID: "gemini-google"},
 	{EnvVar: "OLLAMA_API_KEY", Provider: "ollama", AccountID: "ollama-cloud"},
+	{EnvVar: "NVIDIA_API_KEY", Provider: "nvidia", AccountID: "nvidia", AiderShortNames: []string{"nvidia_nim"}},
+	{EnvVar: "HF_TOKEN", Provider: "huggingface", AccountID: "huggingface", AiderShortNames: []string{"huggingface"}},
+	{EnvVar: "CEREBRAS_API_KEY", Provider: "cerebras", AccountID: "cerebras", AiderShortNames: []string{"cerebras"}},
+	{EnvVar: "ORCAROUTER_API_KEY", Provider: "orcarouter", AccountID: "orcarouter"},
+	{EnvVar: "CLOUDFLARE_API_KEY", Provider: "cloudflare_workers_ai", AccountID: "cloudflare-workers-ai", AiderShortNames: []string{"cloudflare"}},
 	{EnvVar: "ALIBABA_CLOUD_API_KEY", Provider: "alibaba_cloud", AccountID: "alibaba_cloud", AiderShortNames: []string{"alibaba", "qwen"}},
 }
 

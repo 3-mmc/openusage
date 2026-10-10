@@ -16,8 +16,9 @@ import (
 // here; OAuth handling for openai/anthropic/google would require token-
 // exchange against opencode.ai's auth server and is a separate piece of work.
 type opencodeAuthEntry struct {
-	Type string `json:"type"`
-	Key  string `json:"key"`
+	Type     string            `json:"type"`
+	Key      string            `json:"key"`
+	Metadata map[string]string `json:"metadata"`
 }
 
 // opencodeAuthMapping maps an OpenCode auth.json provider key to the matching
@@ -45,6 +46,13 @@ var opencodeAuthMapping = map[string]struct {
 	"ollama-cloud": {"ollama", "ollama-cloud"},
 	"groq":         {"groq", "groq"},
 	"mistral":      {"mistral", "mistral"},
+	"google":       {"gemini_api", "gemini-api"},
+	"nvidia":       {"nvidia", "nvidia"},
+	"huggingface":  {"huggingface", "huggingface"},
+	"cerebras":     {"cerebras", "cerebras"},
+	"orcarouter":   {"orcarouter", "orcarouter"},
+	// metadata.accountId carries the Cloudflare account the token is scoped to.
+	"cloudflare-workers-ai": {"cloudflare_workers_ai", "cloudflare-workers-ai"},
 }
 
 // opencodeAuthPaths returns every platform-appropriate candidate path for
@@ -155,6 +163,9 @@ func detectOpenCodeAuth(result *Result) {
 			Token:    entry.Key,
 		}
 		acct.SetHint("credential_source", "opencode_auth_json")
+		if id := strings.TrimSpace(entry.Metadata["accountId"]); id != "" {
+			acct.SetHint("account_id", id)
+		}
 
 		// addAccount de-dupes by ID, so if env-var detection already put
 		// something on the same slot, this is a no-op — env var wins.
