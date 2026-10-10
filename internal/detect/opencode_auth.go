@@ -43,6 +43,8 @@ var opencodeAuthMapping = map[string]struct {
 	"opencode":     {"opencode", "opencode"},
 	"opencode-go":  {"opencode", "opencode"},
 	"ollama-cloud": {"ollama", "ollama-cloud"},
+	"groq":         {"groq", "groq"},
+	"mistral":      {"mistral", "mistral"},
 }
 
 // opencodeAuthPaths returns every platform-appropriate candidate path for

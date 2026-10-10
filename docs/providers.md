@@ -169,6 +169,8 @@ on startup and adopt the API keys it finds. Currently maps:
 | `zai` (api) | `zai` |
 | `opencode` (api) | `opencode` |
 | `ollama-cloud` (api) | `ollama-cloud` (provider `ollama`) |
+| `groq` (api) | `groq` |
+| `mistral` (api) | `mistral` |
 
 OAuth-typed entries (`anthropic`, `openai`, `google`, `cursor`) are skipped:
 they're chat-scoped tokens, not the API-key shape openusage's poll-time probes
