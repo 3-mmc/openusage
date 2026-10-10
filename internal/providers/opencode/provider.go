@@ -76,6 +76,16 @@ type modelsResponse struct {
 }
 
 func (p *Provider) Fetch(ctx context.Context, acct core.AccountConfig) (core.UsageSnapshot, error) {
+	if acct.Auth == "local" && acct.ResolveAPIKey() == "" {
+		// Telemetry-only account (no Zen key): usage comes from the
+		// OpenCode plugin and opencode.db, nothing to probe remotely.
+		snap := core.NewUsageSnapshot(p.ID(), acct.ID)
+		snap.Status = core.StatusOK
+		snap.Message = "Local telemetry"
+		snap.SetAttribute("auth_scope", "local")
+		return snap, nil
+	}
+
 	apiKey, authSnap := shared.RequireAPIKey(acct, p.ID())
 	if authSnap != nil {
 		return *authSnap, nil

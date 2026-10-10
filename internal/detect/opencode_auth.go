@@ -170,4 +170,14 @@ func detectOpenCodeAuth(result *Result) {
 	if matched > 0 || skipped > 0 {
 		log.Printf("[detect] OpenCode auth.json: %d api-key accounts adopted, %d oauth/other entries skipped", matched, skipped)
 	}
+
+	// OpenCode is installed even without a Zen key, and its telemetry
+	// (plugin + opencode.db) is tagged provider "opencode" for free Zen
+	// models. Give that telemetry an account to land on; a keyed account
+	// added above wins because addAccount de-dupes by ID.
+	addAccount(result, core.AccountConfig{
+		ID:       "opencode",
+		Provider: "opencode",
+		Auth:     "local",
+	})
 }

@@ -70,6 +70,9 @@ func TestDetectOpenCodeAuth_AdoptsAPIKeyEntries(t *testing.T) {
 	}
 	// Provenance hint should be set so we can debug where the key came from.
 	for _, a := range result.Accounts {
+		if a.Auth == "local" {
+			continue // keyless telemetry placeholder for OpenCode itself
+		}
 		if a.Hint("credential_source", "") != "opencode_auth_json" {
 			t.Errorf("account %q missing credential_source hint", a.ID)
 		}
@@ -291,4 +294,21 @@ func TestMaskKey(t *testing.T) {
 	if got := maskKey("short"); got != "****" {
 		t.Errorf("maskKey short = %q, want ****", got)
 	}
+}
+
+func TestDetectOpenCodeAuth_AddsLocalAccountWithoutZenKey(t *testing.T) {
+	withFakeOpenCodeAuth(t, `{"openrouter": {"type": "api", "key": "sk-or-1234567890"}}`)
+
+	var result Result
+	detectOpenCodeAuth(&result)
+
+	for _, a := range result.Accounts {
+		if a.ID == "opencode" {
+			if a.Provider != "opencode" || a.Auth != "local" || a.Token != "" {
+				t.Fatalf("opencode account = %+v, want keyless local opencode account", a)
+			}
+			return
+		}
+	}
+	t.Fatalf("no opencode account in %+v", result.Accounts)
 }
