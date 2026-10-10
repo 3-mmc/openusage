@@ -514,3 +514,39 @@ func TestComputeDisplayInfo_BillingBlockFallbackClassifiesAsUsage(t *testing.T) 
 		t.Fatalf("detail = %q, want '$94.93 5h block'", got.detail)
 	}
 }
+
+func TestComputeDisplayInfo_RateLimitHeadlineShowsWorstUsedPercent(t *testing.T) {
+	limit, primaryUsed, primaryRem, weeklyUsed, weeklyRem := 100.0, 0.0, 100.0, 63.0, 37.0
+	snap := core.UsageSnapshot{
+		ProviderID: "codex",
+		Status:     core.StatusOK,
+		Metrics: map[string]core.Metric{
+			"rate_limit_primary":   {Limit: &limit, Used: &primaryUsed, Remaining: &primaryRem, Unit: "%", Window: "5h"},
+			"rate_limit_secondary": {Limit: &limit, Used: &weeklyUsed, Remaining: &weeklyRem, Unit: "%", Window: "7d"},
+		},
+	}
+
+	got := computeDisplayInfo(snap, core.DefaultDashboardWidget(), false)
+	if got.summary != "63% used" {
+		t.Fatalf("summary = %q, want 63%% used", got.summary)
+	}
+	if got.gaugePercent != 63 {
+		t.Fatalf("gaugePercent = %v, want 63", got.gaugePercent)
+	}
+}
+
+func TestComputeDisplayInfo_ContextWindowShowsUsedPercent(t *testing.T) {
+	used, limit := 100000.0, 2000000.0
+	snap := core.UsageSnapshot{
+		ProviderID: "gemini_cli",
+		Status:     core.StatusOK,
+		Metrics: map[string]core.Metric{
+			"context_window": {Used: &used, Limit: &limit, Unit: "tokens", Window: "current"},
+		},
+	}
+
+	got := computeDisplayInfo(snap, core.DefaultDashboardWidget(), false)
+	if got.summary != "5% usage used" {
+		t.Fatalf("summary = %q, want 5%% usage used", got.summary)
+	}
+}

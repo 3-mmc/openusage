@@ -238,9 +238,10 @@ func computeDisplayInfoRaw(snap core.UsageSnapshot, widget core.DashboardWidget,
 	if m, ok := snap.Metrics["context_window"]; ok && m.Used != nil && m.Limit != nil {
 		info.tagEmoji = "⚡"
 		info.tagLabel = "Usage"
+		// m.Percent() returns *remaining* percentage.
 		if pct := m.Percent(); pct >= 0 {
-			info.gaugePercent = pct
-			info.summary = fmt.Sprintf("%.0f%% usage used", pct)
+			info.gaugePercent = 100 - pct
+			info.summary = fmt.Sprintf("%.0f%% usage used", 100-pct)
 		}
 		info.detail = fmt.Sprintf("%s / %s tokens", shortCompact(*m.Used), shortCompact(*m.Limit))
 		return info
@@ -248,23 +249,25 @@ func computeDisplayInfoRaw(snap core.UsageSnapshot, widget core.DashboardWidget,
 
 	rateLimits := core.ExtractRateLimitDisplayMetrics(snap.Metrics)
 	if len(rateLimits) > 0 {
-		worstRatePct := float64(100)
+		// UsedPercent is already a used percentage (MetricUsedPercent), so the
+		// worst window is the one with the highest value.
+		worstUsedPct := float64(0)
 		rateParts := make([]string, 0, len(rateLimits))
 		for _, rate := range rateLimits {
-			if rate.UsedPercent < worstRatePct {
-				worstRatePct = rate.UsedPercent
+			if rate.UsedPercent > worstUsedPct {
+				worstUsedPct = rate.UsedPercent
 			}
 			if rate.UsesRemainingPercent {
 				label := metricLabel(widget, rate.LabelKey)
 				rateParts = append(rateParts, fmt.Sprintf("%s %.0f%%", label, 100-rate.RemainingPercent))
 				continue
 			}
-			rateParts = append(rateParts, fmt.Sprintf("%s %.0f%%", strings.ToUpper(rate.LabelKey), 100-rate.UsedPercent))
+			rateParts = append(rateParts, fmt.Sprintf("%s %.0f%%", strings.ToUpper(rate.LabelKey), rate.UsedPercent))
 		}
 		info.tagEmoji = "⚡"
 		info.tagLabel = "Usage"
-		info.gaugePercent = 100 - worstRatePct
-		info.summary = fmt.Sprintf("%.0f%% used", 100-worstRatePct)
+		info.gaugePercent = worstUsedPct
+		info.summary = fmt.Sprintf("%.0f%% used", worstUsedPct)
 		if len(rateParts) > 0 {
 			sort.Strings(rateParts)
 			info.detail = strings.Join(rateParts, " · ")
